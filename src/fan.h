@@ -9,8 +9,7 @@ class Fan {
 
         typedef enum {
             fmOff,
-            fmOn,
-            fmMax
+            fmOn
         } FanMode;
 
         void update(uint8_t spiral_temp, uint8_t manual_temp);
@@ -25,7 +24,7 @@ class Fan {
         uint8_t spiral_temp_;
         uint8_t manual_temp_;
 
-        String mode_name_[3] = {"Off", "On", "Max"};
+        String main_mode_name_[3] = {"Off", "On"};
 
         FanMode fan_mode_;
 
