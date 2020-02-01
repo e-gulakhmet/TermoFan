@@ -16,7 +16,11 @@ class Fan {
         void setSpeed(uint8_t speed);
         void on();
         void off();
+        void addTemp();
+        void minTemp();
+
         uint8_t getSpeed() {return speed_;}
+        String getModeName();
 
     private:
         uint8_t fan_pin_;
@@ -24,7 +28,7 @@ class Fan {
         uint8_t spiral_temp_;
         uint8_t manual_temp_;
 
-        String main_mode_name_[3] = {"Off", "On"};
+        String mode_name_[3] = {"Off", "On"};
 
         FanMode fan_mode_;
 
