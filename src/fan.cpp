@@ -21,6 +21,14 @@ void Fan::update(uint8_t spiral_temp, uint8_t manual_temp) {
     switch(fan_mode_) {
         case fmOff:
             // Вентилятор выключен
+            // Если температура спирали больше 40
+            // включаем вентилятор.
+            if (spiral_temp_ >= 40) {
+                speed_ = 100;
+            }
+            else { // Если температура не больше 40, то выключаем вентилятор
+                speed_ = 0;
+            }
 
             analogWrite(fan_pin_, 0);
             break;
@@ -30,12 +38,14 @@ void Fan::update(uint8_t spiral_temp, uint8_t manual_temp) {
 
             // Устанавливаем скрость 100, если температура больше 40
             if (spiral_temp_ >= 40 && speed_ <= 99) {
-                analogWrite(fan_pin_, 100);
+                speed_ = 100;
             }
 
             else {
-                analogWrite(fan_pin_, speed_);
-            }            
+                
+            }
+
+            analogWrite(fan_pin_, speed_);         
             break;
     }
 
@@ -46,10 +56,7 @@ void Fan::setSpeed(uint8_t speed) {
 }
 
 void Fan::off() {
-    // Если температура спирали меньше 40, тогда можем выключить вентилятор
-    if (spiral_temp_ <= 40) {
-        fan_mode_ = fmOff;
-    }
+    fan_mode_ = fmOff;
 }
 
 void Fan::on() {
@@ -57,11 +64,21 @@ void Fan::on() {
 }
 
 void Fan::addTemp() {
-    speed_ += 10;
+    if (speed_ >= 100) {
+        speed_ = 100;
+    }
+    else {
+        speed_ += 10;
+    }
 }
 
 void Fan::minTemp() {
-    speed_ -= 10;
+    if (speed_ <= 0) {
+        speed_ = 0;
+    }
+    else {
+        speed_ -= 10;
+    }
 }
 
 String Fan::getModeName() {
