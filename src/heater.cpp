@@ -25,8 +25,13 @@ void Heater::update() {
             heater_temp_ = getTemp();
 
             if (heater_temp_ > max_temp_) {
-                manual_temp_ = max_temp_ - 20;
+                analogWrite(heater_pin_, 0);
             }
+            
+            else {
+                analogWrite(heater_pin_, manual_temp_);    
+            }
+            
 
             break;
 
