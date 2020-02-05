@@ -12,41 +12,51 @@ Heater::Heater(uint8_t heater_pin, uint8_t sensor_pin)
     , wireSensor(sensor_pin_)
     , sensor(&wireSensor)
     {
-        pinMode(heater_pin_, OUTPUT);      
+        pinMode(heater_pin_, OUTPUT);
+        sensor.begin();
     }
 
 
 
 void Heater::update() {
-    
 
     switch (mode_) {
+        // Если нагреватель включен
         case mOn:
             heater_temp_ = getTemp();
 
+            // Если температура больше максимальной, то выключаем нагреваетель
             if (heater_temp_ > max_temp_) {
-                analogWrite(heater_pin_, 0);
+                digitalWrite(heater_pin_, LOW);
             }
             
             else {
-                analogWrite(heater_pin_, manual_temp_);    
+                // Если темепература спирали меньше указанной температуры,
+                // Включаем нагреватель
+                if (heater_temp_ < manual_temp_) {
+                    digitalWrite(heater_pin_, HIGH);
+                }
+                // Если температура спирали больше указанной,
+                // то выключаем нагреватель
+                else if (heater_temp_ >= manual_temp_) {
+                    digitalWrite(heater_temp_, LOW);
+                }
             }
-            
 
             break;
 
         
         case mOff:
-            manual_temp_ = 0;
+            digitalWrite(heater_temp_, LOW);
     }
-    
 }
 
 
 
 uint8_t Heater::getTemp(){
     sensor.requestTemperatures();
-    uint8_t temp = sensor.getTempC(sensorAddress);
+    uint8_t temp = sensor.getTempCByIndex(0);
+    Serial.println(temp);
     return temp;
 }
 
