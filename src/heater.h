@@ -23,6 +23,8 @@ class Heater {
         void on();
         void off();
         void setMaxTemp(uint8_t max_temp);
+        uint8_t getHeaterTemp() {return heater_temp_;}
+        uint8_t getManualTemp() {return manual_temp_;}
     
     private:
         uint8_t getTemp();

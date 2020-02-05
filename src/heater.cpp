@@ -56,7 +56,6 @@ void Heater::update() {
 uint8_t Heater::getTemp(){
     sensor.requestTemperatures();
     uint8_t temp = sensor.getTempCByIndex(0);
-    Serial.println(temp);
     return temp;
 }
 
