@@ -15,4 +15,9 @@ const uint8_t TFT_CS = 7;
 const uint8_t TFT_RST = 8;
 const uint8_t TFT_AO = 9;
 
+typedef enum {
+    mmHeater,
+    mmFan
+} MenuMode;
+
 #endif // _MAIN_H_
