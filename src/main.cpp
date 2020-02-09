@@ -14,7 +14,7 @@ Heater heater(HEATER_PIN, TEMP_PIN);
 Encoder encoder(ENC_CLK, ENC_DT, ENC_BUTT, TYPE2);
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_AO, TFT_RST);
 
-MenuMode menu_mode = mmFan;
+MenuMode menu_mode = mmHeater;
 
 bool is_cursor;
 unsigned long cursor_timer;
@@ -144,12 +144,11 @@ void showDisp() {
     }
     if (encoder.isRight()) {
       // Меняем режим на следущий
-      menu_mode = mmHeater;
-      switchMenuMode(menu_mode, 1);
+      menu_mode = switchMenuMode(menu_mode, 1);
     }
     if (encoder.isLeft()) {
       // Меняем режим на предыдущий
-      switchMenuMode(menu_mode, -1);
+      menu_mode = switchMenuMode(menu_mode, 0);
     }
   }
   
@@ -179,12 +178,5 @@ void loop() {
   heater.update();
   encoder.tick();
 
-  if (encoder.isRight()) Serial.println("Right");         // если был поворот
-  if (encoder.isLeft()) Serial.println("Left");
-  if (encoder.isRightH()) Serial.println("Right holded"); // если было удержание + поворот
-  if (encoder.isLeftH()) Serial.println("Left holded");
-  if (encoder.isPress()) Serial.println("Press");         // нажатие на кнопку (+ дебаунс)
-  if (encoder.isClick()) Serial.println("Click");         // отпускание кнопки (+ дебаунс)
-
-  // showDisp();
+  showDisp();
 }
