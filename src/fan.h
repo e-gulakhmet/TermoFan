@@ -19,7 +19,7 @@ class Fan {
         void addTemp();
         void minTemp();
 
-        uint8_t getSpeed() {return speed_/2.55;}
+        uint8_t getSpeed();
         String getModeName();
 
     private:

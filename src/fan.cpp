@@ -81,6 +81,10 @@ void Fan::minTemp() {
     }
 }
 
+uint8_t Fan::getSpeed() {
+    return uint8_t(speed_);
+}
+
 String Fan::getModeName() {
     return mode_name_[fan_mode_];
 }
