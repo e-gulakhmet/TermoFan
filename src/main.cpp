@@ -13,9 +13,14 @@ Heater heater(HEATER_PIN, TEMP_PIN);
 Encoder encoder(ENC_CLK, ENC_DT, ENC_BUTT, TYPE2);
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_AO, TFT_RST);
 
-MenuMode menu_mode;
+MenuMode menu_mode = mmHeater;
 
 bool is_cursor;
+unsigned long cursor_timer;
+bool cursor;
+
+
+// TODO: Нарисовать символ градус
 
 
 
@@ -35,11 +40,82 @@ MenuMode switchMenuMode(MenuMode curr, bool clockwice) { // Переключен
 
 
 
-void showDisp(){
+void drawCursor(uint8_t x, uint8_t y, bool is_blink) {
+  if (is_blink) {
+    if (millis() - cursor_timer > 500) {
+      cursor_timer = millis();
+      cursor = !cursor;
+    }
+    if (cursor) {
+      tft.drawRect(x, y, 160, 40, ST7735_GREEN);
+    }
+    else {
+      tft.drawRect(x, y, 160, 40, ST7735_BLACK);
+    }
+  }
+  else {
+    tft.drawRect(x, y, 160, 40, ST7735_GREEN);
+  }
+  
+}
+
+
+
+void showDisp() {
   // Показываем данные о температуре
-  // Показываем работает ли система
+  // Название окна нагревателя
+  tft.setTextColor(ST7735_YELLOW);
+  tft.setTextSize(2);
+  tft.setCursor(40, 0);
+  tft.print("HEATER");
+  // Названия маленьких окон
+  tft.setTextSize(1);
+  tft.setCursor(10, 20);
+  tft.print("CURRENT");
+  tft.setCursor(100, 20);
+  tft.print("MANUAL");
+
+  // Данные по температурам
+  tft.setTextColor(ST7735_WHITE);
+  tft.setTextSize(3);
+  tft.setCursor(5, 30);
+  tft.print(heater.getHeaterTemp());
+  tft.print("'");
+  tft.setCursor(90, 30);
+  tft.print(heater.getManualTemp());
+  tft.print("'");
   // Показываем данные о вентиляторе
+
+  // Показываем работает ли система
+
+  
   // Показываем работает включен ли сейчас нагрев
+
+  switch (menu_mode) {
+    case mmHeater: // Режим настройки нагревателя
+      if (is_cursor) {
+        // Показать курсор
+        drawCursor(0, 15, false);
+        // Упрвление темперартурой
+      }
+      else {
+        // Мигаем курсором
+        drawCursor(0, 15, true);        
+      }
+      break;
+    
+
+    case mmFan: // Режим настройки вентилятора
+      if (is_cursor) {
+        // Показать курсор
+        // Упрвление скоростью
+      }
+      else {
+        // Мигаем курсором
+      }
+      break;
+  }
+
 
   if (is_cursor) {
     if (encoder.isHolded()) {
@@ -62,28 +138,6 @@ void showDisp(){
   
 
 
-  switch (menu_mode) {
-    case mmHeater: // Режим настройки нагревателя
-      if (is_cursor) {
-        // Показать курсор
-        // Упрвление темперартурой
-      }
-      else {
-        // Мигаем курсором
-      }
-      break;
-    
-
-    case mmFan: // Режим настройки вентилятора
-      if (is_cursor) {
-        // Показать курсор
-        // Упрвление скоростью
-      }
-      else {
-        // Мигаем курсором
-      }
-      break;
-  }
 }
 
 
@@ -93,8 +147,8 @@ void showDisp(){
 void setup() {
   Serial.begin(9600);
   tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
-  tft.fillScreen(ST7735_CYAN);
-  tft.setTextColor(ST77XX_RED);
+  tft.fillScreen(ST7735_BLACK);
+  tft.setRotation(3);
 }
 
 
@@ -103,4 +157,6 @@ void loop() {
   fan.update(heater.getHeaterTemp(), heater.getManualTemp());
   heater.update();
   encoder.tick();
+
+  showDisp();
 }
