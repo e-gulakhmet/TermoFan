@@ -23,7 +23,11 @@ void Heater::update() {
     switch (mode_) {
         // Если нагреватель включен
         case mOn:
-            heater_temp_ = getTemp();
+            if (millis() - timer > 1000) {
+                heater_temp_ = getTemp();
+                timer = millis();
+            }
+            
 
             // Если температура больше максимальной, то выключаем нагреваетель
             if (heater_temp_ > max_temp_) {
@@ -56,6 +60,7 @@ void Heater::update() {
 uint8_t Heater::getTemp(){
     sensor.requestTemperatures();
     uint8_t temp = sensor.getTempCByIndex(0);
+    Serial.println(temp);
     return temp;
 }
 

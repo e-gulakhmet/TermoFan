@@ -34,6 +34,7 @@ class Heater {
         uint8_t heater_temp_;
         uint8_t manual_temp_;
         uint8_t max_temp_;
+        unsigned long timer;
 
         Mode mode_;
         OneWire wireSensor;
